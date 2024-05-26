@@ -1,0 +1,6 @@
+@ApiRestEDC_HostAddress = http://localhost:5069
+
+GET {{ApiRestEDC_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
