@@ -10,6 +10,7 @@ CREATE TABLE estadoCuenta (
     Nombres VARCHAR(100) NOT NULL,
     Apellidos VARCHAR(100) NOT NULL,
     Cuenta INT NOT NULL,
+	Limite DECIMAL(18, 2) NOT NULL,
     Status INT NOT NULL CHECK (Status IN (0, 1))
 );
 
@@ -36,11 +37,14 @@ CREATE PROCEDURE InsertarEstadoCuenta
     @Nombres VARCHAR(100),
     @Apellidos VARCHAR(100),
     @Cuenta INT,
+	@Limite DECIMAL(18, 2),
     @Status INT
 AS
 BEGIN
-    INSERT INTO estadoCuenta (NumeroTarjeta, Nombres, Apellidos, Cuenta, Status)
-    VALUES (@NumeroTarjeta, @Nombres, @Apellidos, @Cuenta, @Status);
+    INSERT INTO estadoCuenta (NumeroTarjeta, Nombres, Apellidos, Cuenta, Limite, Status)
+    VALUES (@NumeroTarjeta, @Nombres, @Apellidos, @Cuenta, @Limite, @Status);
+
+	SELECT SCOPE_IDENTITY() AS Id;
 END;
 GO
 
@@ -55,6 +59,8 @@ AS
 BEGIN
     INSERT INTO detalleEstadoCuenta (idEstadoCuenta, Descripcion, Fecha, Monto, Accion, NumAutorizacion)
     VALUES (@idEstadoCuenta, @Descripcion, @Fecha, @Monto, @Accion, @NumAutorizacion);
+
+	SELECT SCOPE_IDENTITY() AS Id;
 END;
 GO
 
@@ -62,15 +68,54 @@ GO
 CREATE PROCEDURE SeleccionarTodosEstadoCuenta
 AS
 BEGIN
-    SELECT * FROM estadoCuenta;
+    SELECT 
+        ec.id,
+        ec.NumeroTarjeta,
+        ec.Nombres,
+        ec.Apellidos,
+        ec.Cuenta,
+		ec.Limite,
+        ec.Status,
+        COALESCE((
+            SELECT 
+                SUM(CASE WHEN dec.Accion = 1 THEN dec.Monto ELSE 0 END) - 
+                SUM(CASE WHEN dec.Accion = 2 THEN dec.Monto ELSE 0 END)
+            FROM 
+                detalleEstadoCuenta dec
+            WHERE 
+                dec.idEstadoCuenta = ec.id
+        ), 0) AS Saldo
+    FROM 
+        estadoCuenta ec;
 END;
+
 GO
 
 CREATE PROCEDURE SeleccionarEstadoCuentaPorID
-    @EstadoCuentaID INT
+    @id INT
 AS
 BEGIN
-    SELECT * FROM estadoCuenta WHERE id = @EstadoCuentaID;
+    SELECT 
+        ec.id,
+        ec.NumeroTarjeta,
+        ec.Nombres,
+        ec.Apellidos,
+        ec.Cuenta,
+        ec.Limite,
+        ec.Status,
+        COALESCE((
+            SELECT 
+                SUM(CASE WHEN dec.Accion = 1 THEN dec.Monto ELSE 0 END) - 
+                SUM(CASE WHEN dec.Accion = 2 THEN dec.Monto ELSE 0 END)
+            FROM 
+                detalleEstadoCuenta dec
+            WHERE 
+                dec.idEstadoCuenta = ec.id
+        ), 0) AS Saldo
+    FROM 
+        estadoCuenta ec
+    WHERE
+        ec.id = @id;
 END;
 GO
 

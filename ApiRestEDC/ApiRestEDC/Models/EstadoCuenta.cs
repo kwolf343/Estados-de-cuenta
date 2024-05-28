@@ -11,6 +11,8 @@ public class EstadoCuenta
     public string Apellidos { get; set; } = null!;
     public int Cuenta { get; set; }
     public int Status { get; set; }
+    public decimal Saldo { get; set; }
+    public decimal Limite { get; set; }
     public ICollection<DetalleEstadoCuenta> DetalleEstadoCuenta { get; set; } = new List<DetalleEstadoCuenta>();
 }
 

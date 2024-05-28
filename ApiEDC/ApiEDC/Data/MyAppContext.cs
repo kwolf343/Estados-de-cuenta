@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ApiRestEDC.Models;
+﻿using ApiEDC.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace ApiRestEDC.Datos
+namespace ApiEDC.Data
 {
     public class MyAppContext : DbContext
     {
@@ -12,7 +12,7 @@ namespace ApiRestEDC.Datos
         public DbSet<EstadoCuenta> EstadoCuenta { get; set; }
 
         public DbSet<DetalleEstadoCuenta> DetalleEstadoCuenta { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<EstadoCuenta>()

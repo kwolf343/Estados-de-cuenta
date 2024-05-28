@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApiRestEDC.Datos;
-using ApiRestEDC.Models;
-using System.Data;
+using ApiEDC.Data;
+using ApiEDC.Models;
 using Dapper;
+using System.Data;
 
-namespace ApiRestEDC.Controllers
+namespace ApiEDC.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class EstadoCuentasController : ControllerBase
     {
@@ -48,7 +48,7 @@ namespace ApiRestEDC.Controllers
         {
             var estadoCuenta = await _dbConnection.QuerySingleOrDefaultAsync<EstadoCuenta>(
                 "SeleccionarEstadoCuentaPorID",
-                new { id = id }, // Asegúrate de que el nombre del parámetro coincide con el nombre esperado por el procedimiento almacenado
+                new { EstadoCuentaID = id },
                 commandType: CommandType.StoredProcedure);
 
             if (estadoCuenta != null)
