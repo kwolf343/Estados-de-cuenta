@@ -10,8 +10,10 @@ CREATE TABLE estadoCuenta (
     Nombres VARCHAR(100) NOT NULL,
     Apellidos VARCHAR(100) NOT NULL,
     Cuenta INT NOT NULL,
-	Limite DECIMAL(18, 2) NOT NULL,
-    Status INT NOT NULL CHECK (Status IN (0, 1))
+    Limite DECIMAL(18, 2) NOT NULL,
+    Status INT NOT NULL CHECK (Status IN (0, 1)),
+    PorcentajeInteresConfigurable DECIMAL(18, 2) NOT NULL,
+    PorcentajeConfigurableSaldoMinimo DECIMAL(18, 2) NOT NULL
 );
 
 CREATE TABLE detalleEstadoCuenta (
@@ -37,14 +39,16 @@ CREATE PROCEDURE InsertarEstadoCuenta
     @Nombres VARCHAR(100),
     @Apellidos VARCHAR(100),
     @Cuenta INT,
-	@Limite DECIMAL(18, 2),
-    @Status INT
+    @Limite DECIMAL(18, 2),
+    @Status INT,
+    @PorcentajeInteresConfigurable DECIMAL(18, 2),
+    @PorcentajeConfigurableSaldoMinimo DECIMAL(18, 2)
 AS
 BEGIN
-    INSERT INTO estadoCuenta (NumeroTarjeta, Nombres, Apellidos, Cuenta, Limite, Status)
-    VALUES (@NumeroTarjeta, @Nombres, @Apellidos, @Cuenta, @Limite, @Status);
+    INSERT INTO estadoCuenta (NumeroTarjeta, Nombres, Apellidos, Cuenta, Limite, Status, PorcentajeInteresConfigurable, PorcentajeConfigurableSaldoMinimo)
+    VALUES (@NumeroTarjeta, @Nombres, @Apellidos, @Cuenta, @Limite, @Status, @PorcentajeInteresConfigurable, @PorcentajeConfigurableSaldoMinimo);
 
-	SELECT SCOPE_IDENTITY() AS Id;
+    SELECT SCOPE_IDENTITY() AS Id;
 END;
 GO
 
@@ -60,7 +64,7 @@ BEGIN
     INSERT INTO detalleEstadoCuenta (idEstadoCuenta, Descripcion, Fecha, Monto, Accion, NumAutorizacion)
     VALUES (@idEstadoCuenta, @Descripcion, @Fecha, @Monto, @Accion, @NumAutorizacion);
 
-	SELECT SCOPE_IDENTITY() AS Id;
+    SELECT SCOPE_IDENTITY() AS Id;
 END;
 GO
 
@@ -74,7 +78,7 @@ BEGIN
         ec.Nombres,
         ec.Apellidos,
         ec.Cuenta,
-		ec.Limite,
+        ec.Limite,
         ec.Status,
         COALESCE((
             SELECT 
@@ -88,7 +92,6 @@ BEGIN
     FROM 
         estadoCuenta ec;
 END;
-
 GO
 
 CREATE PROCEDURE SeleccionarEstadoCuentaPorID
@@ -132,3 +135,24 @@ AS
 BEGIN
     SELECT * FROM detalleEstadoCuenta WHERE idEstadoCuenta = @EstadoCuentaID;
 END;
+GO
+
+-- Nuevo procedimiento almacenado para filtrar por mes y año
+CREATE PROCEDURE SeleccionarDetalleEstadoCuentaPorIdYFecha
+    @IdEstadoCuenta INT,
+    @Fecha DATE
+AS
+BEGIN
+    DECLARE @InicioMes DATE;
+    DECLARE @FinMes DATE;
+
+    SET @InicioMes = DATEADD(MONTH, DATEDIFF(MONTH, 0, @Fecha), 0);
+    SET @FinMes = DATEADD(MONTH, 1, @InicioMes);
+
+    SELECT * 
+    FROM detalleEstadoCuenta 
+    WHERE idEstadoCuenta = @IdEstadoCuenta 
+    AND Fecha >= @InicioMes 
+    AND Fecha < @FinMes;
+END;
+GO

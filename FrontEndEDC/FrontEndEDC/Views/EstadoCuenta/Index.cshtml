@@ -1,0 +1,56 @@
+﻿@model IEnumerable<FrontEndEDC.Models.EstadoCuenta>
+@{
+    ViewData["Title"] = "Lista de estados de cuenta";
+}
+<div class="row">
+    <div class="offset-12">
+        <div class="card border">
+            <div class="card-header d-flex align-items-center">
+                <img src="~/banco.png" class="mr-3" alt="Logo del banco">
+                <p class="text-white m-0">Lista de tarjetas</p>
+            </div>
+            <h5 class="p-3"><strong>Listado de targetas</strong></h5>
+            <div class="card-body">
+                <div class="table-responsive">
+                    @if (Model.Count() > 0)
+                    {
+                        <table class="table table-bordered" id="tblEDC" width="100%" cellpadding="0">
+                            <thead>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(m => m.NumeroTarjeta)</th>
+                                    <th>@Html.DisplayNameFor(m => m.Nombres)</th>
+                                    <th>@Html.DisplayNameFor(m => m.Apellidos)</th>
+                                    <th>Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(n => item.NumeroTarjeta)</td>
+                                        <td>@Html.DisplayFor(n => item.Nombres)</td>
+                                        <td>@Html.DisplayFor(n => item.Apellidos)</td>
+                                        <td >
+                                            <a class="btn btn-primary active btn-edc" asp-action="Detalle" asp-route-id="@item.Id"> Estado de cuenta</a>
+                                            <a class="btn bg-success text-white btn-edc" asp-action="Detalle" asp-route-id="@item.Id"> Registrar compra</a>
+                                            <a class="btn bg-primary text-white btn-edc" asp-action="Borrar" asp-route-id="@item.Id"> Registrar pago</a>
+                                            <a class="btn bg-secondary text-white btn-edc" asp-action="Borrar" asp-route-id="@item.Id"> Transacciones</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No hay registros</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Tabla.js" asp-append-version="true"></script>
+}

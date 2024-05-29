@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ApiRestEDC.Datos;
-using ApiRestEDC.Models;
 using System.Data;
 using Dapper;
+using ApiRestEDC.Models;
 
 namespace ApiRestEDC.Controllers
 {
@@ -44,25 +42,54 @@ namespace ApiRestEDC.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<EstadoCuenta> GetEstadoCuentaPorID(int id)
+        public async Task<ActionResult<EstadoCuenta>> GetEstadoCuentaPorID(int id)
         {
             var estadoCuenta = await _dbConnection.QuerySingleOrDefaultAsync<EstadoCuenta>(
                 "SeleccionarEstadoCuentaPorID",
-                new { id = id }, // Asegúrate de que el nombre del parámetro coincide con el nombre esperado por el procedimiento almacenado
+                new { id = id },
                 commandType: CommandType.StoredProcedure);
 
-            if (estadoCuenta != null)
+            if (estadoCuenta == null)
             {
-                var detalles = await _dbConnection.QueryAsync<DetalleEstadoCuenta>(
-                    "SeleccionarDetalleEstadoCuentaPorIDEstadoCuenta",
-                    new { EstadoCuentaID = estadoCuenta.Id },
-                    commandType: CommandType.StoredProcedure);
-
-                estadoCuenta.DetalleEstadoCuenta = detalles.ToList();
+                return NotFound();
             }
+
+            var detalles = await _dbConnection.QueryAsync<DetalleEstadoCuenta>(
+                "SeleccionarDetalleEstadoCuentaPorIDEstadoCuenta",
+                new { EstadoCuentaID = estadoCuenta.Id },
+                commandType: CommandType.StoredProcedure);
+
+            estadoCuenta.DetalleEstadoCuenta = detalles.ToList();
 
             return estadoCuenta;
         }
+
+        [HttpGet("{id}/{fecha}")]
+        public async Task<ActionResult<EstadoCuenta>> GetEstadoCuentaPorIdYFecha(int id, DateTime fecha)
+        {
+            var estadoCuenta = await _dbConnection.QuerySingleOrDefaultAsync<EstadoCuenta>(
+                "SeleccionarEstadoCuentaPorID",
+                new { id = id },
+                commandType: CommandType.StoredProcedure);
+
+            if (estadoCuenta == null)
+            {
+                return NotFound();
+            }
+
+            var detalles = await _dbConnection.QueryAsync<DetalleEstadoCuenta>(
+                "SeleccionarDetalleEstadoCuentaPorIdYFecha",
+                new { IdEstadoCuenta = id, Fecha = fecha },
+                commandType: CommandType.StoredProcedure);
+
+            estadoCuenta.DetalleEstadoCuenta = detalles.ToList();
+
+            // Calcular el saldo basado en los detalles dentro del rango de fecha proporcionado
+            estadoCuenta.Saldo = detalles.Sum(d => d.Monto);
+
+            return estadoCuenta;
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> PostEstadoCuenta([FromBody] EstadoCuenta estadoCuenta)
@@ -72,8 +99,10 @@ namespace ApiRestEDC.Controllers
             parameters.Add("@Nombres", estadoCuenta.Nombres);
             parameters.Add("@Apellidos", estadoCuenta.Apellidos);
             parameters.Add("@Cuenta", estadoCuenta.Cuenta);
-            parameters.Add("@Limite", estadoCuenta.Cuenta);
+            parameters.Add("@Limite", estadoCuenta.Limite);
             parameters.Add("@Status", estadoCuenta.Status);
+            parameters.Add("@PorcentajeInteresConfigurable", estadoCuenta.PorcentajeInteresConfigurable);
+            parameters.Add("@PorcentajeConfigurableSaldoMinimo", estadoCuenta.PorcentajeConfigurableSaldoMinimo);
 
             var id = await _dbConnection.ExecuteScalarAsync<int>(
                 "InsertarEstadoCuenta",
@@ -85,5 +114,7 @@ namespace ApiRestEDC.Controllers
 
             return CreatedAtAction(nameof(GetEstadoCuentaPorID), new { id = id }, estadoCuenta);
         }
+
+        // Otros métodos del controlador (PUT, DELETE) si es necesario
     }
 }

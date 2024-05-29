@@ -1,0 +1,84 @@
+﻿@model FrontEndEDC.Models.EstadoCuenta
+
+@{
+    ViewData["Title"] = "Detalle del Estado de Cuenta";
+    decimal saldo = Model.Saldo;
+    decimal limite = Model.Limite;
+    decimal saldoTotal = limite - saldo;
+    decimal porcentajeInteresConfigurable = Model.PorcentajeInteresConfigurable;
+    decimal interesBonificable = saldo * porcentajeInteresConfigurable;
+}
+
+<div class="row">
+    <div class="offset-12">
+        <div class="card border">
+            <div class="card-header d-flex align-items-center">
+                <img src="~/banco.png" class="mr-3" alt="Logo del banco">
+                <p class="text-white m-0">Lista de tarjetas</p>
+            </div>
+            <div class="d-flex justify-content-between">
+                <h5 class="p-3"><strong>Estado de cuenta de tc</strong></h5>
+                <a class="p-3 text-decoration-none" asp-action="Index">&lt; Volver</a>
+            </div>
+            
+            <div class="p-3 d-flex justify-content-between container-edc">
+                <div class="d-flex">
+                    <div class="info-edc">
+                        <p><strong>Nombre del cliente:</strong></p>
+                        <p><strong>Numero de targeta de credito:</strong></p>
+                    </div>
+                    <div>
+                        <p>@Html.DisplayFor(m => m.Nombres) @Html.DisplayFor(m => m.Apellidos)</p>
+                        <p>@Html.DisplayFor(m => m.NumeroTarjeta)</p>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="info-edc">
+                        <p><strong>Saldo actual:</strong></p>
+                        <p><strong>Limite:</strong></p>
+                        <p><strong>Interes bonificable:</strong></p>
+                        <p><strong>Saldo disponible:</strong></p>
+                    </div>
+                    
+                    <div class="info-edc">
+                        <p>$@saldo</p>
+                        <p>$@limite</p>
+                        <p>$@(Math.Truncate(interesBonificable * 100) / 100)</p>
+                        <p>$@saldoTotal</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 container-edc-table pt-0">
+                @if (Model.DetalleEstadoCuenta.Count() > 0)
+                {
+                    <table class="table table-bordered" width="100%" cellpadding="0">
+                        <thead>
+                            <tr>
+                                <th>Numero de autorización</th>
+                                <th>Fecha</th>
+                                <th>Descripcion</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.DetalleEstadoCuenta)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(n => item.NumAutorizacion)</td>
+                                    <td>@(item.Fecha.ToString("dd/MM/yyyy"))</td>
+
+                                    <td>@Html.DisplayFor(n => item.Descripcion)</td>
+                                    <td>$@Html.DisplayFor(n => item.Monto)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No hay registros</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
