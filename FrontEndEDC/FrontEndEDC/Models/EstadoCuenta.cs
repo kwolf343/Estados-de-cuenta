@@ -48,5 +48,7 @@ namespace FrontEndEDC.Models
         [Required(ErrorMessage = "El monto es obligatorio")]
         [Range(0, double.MaxValue, ErrorMessage = "El monto debe ser un valor positivo")]
         public decimal MontoCompra { get; set; }
+
+        public decimal CuotaMinimaAPagar { get; set; }
     }
 }

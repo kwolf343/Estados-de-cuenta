@@ -1,6 +1,15 @@
 ﻿@model FrontEndEDC.Models.EstadoCuenta
 @{
     ViewData["Title"] = "Compra";
+    decimal saldo = 0;
+    decimal limite = 0;
+    decimal saldoTotal = 0;
+    if (Model != null)
+    {
+        saldo = Model.Saldo;
+        limite = Model.Limite;
+        saldoTotal = limite - saldo;
+    }
 }
 
 <div class="row">
@@ -15,6 +24,10 @@
                 <a class="p-3 text-decoration-none text-danger" asp-action="Index">&lt; Volver</a>
             </div>
 
+            @if (Model == null)
+            {
+                <p class="p-3">No se encontró el estado de cuenta solicitado.</p>
+            }else{
             <div class="p-3 d-flex">
                 <div class="info-edc">
                     <p><strong>Nombre del cliente:</strong></p>
@@ -31,6 +44,7 @@
                     @Html.HiddenFor(m => m.Nombres)
                     @Html.HiddenFor(m => m.Apellidos)
                     @Html.HiddenFor(m => m.NumeroTarjeta)
+                    @Html.Hidden("cuotaMinimaAPagar", saldoTotal)
 
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="d-flex">
@@ -60,6 +74,7 @@
                     </div>
                 </form>
             </div>
+            }
         </div>
     </div>
 </div>

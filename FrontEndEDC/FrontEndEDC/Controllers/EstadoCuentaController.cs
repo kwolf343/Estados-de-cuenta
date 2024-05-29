@@ -63,10 +63,10 @@ namespace FrontEndEDC.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error");
+                return View("Detalle", null);
             }
 
-            return NotFound();
+            return View("Detalle", null);
         }
 
         [HttpGet]
@@ -97,10 +97,10 @@ namespace FrontEndEDC.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error");
+                return View("Compra", null);
             }
 
-            return NotFound();
+            return View("Compra", null);
         }
 
         [HttpPost]
@@ -109,6 +109,13 @@ namespace FrontEndEDC.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (estadoCuenta.MontoCompra > estadoCuenta.CuotaMinimaAPagar)
+                {
+                    ModelState.AddModelError("MontoCompra", $"La compra excede el saldo disponible, saldo disponible: ${estadoCuenta.CuotaMinimaAPagar:F2}");
+                    return View(estadoCuenta);
+                }
+
+
                 var detalleEDC = new DetalleEstadoCuenta
                 {
                     IdEstadoCuenta = estadoCuenta.Id,
@@ -163,10 +170,10 @@ namespace FrontEndEDC.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error");
+                return View("Pago", null);
             }
 
-            return NotFound();
+            return View("Pago", null);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -176,6 +183,18 @@ namespace FrontEndEDC.Controllers
 
             if (ModelState.IsValid)
             {
+                // Verifica si el monto de la compra es menor que la cuota mínima a pagar
+                if (estadoCuenta.MontoCompra <= estadoCuenta.CuotaMinimaAPagar)
+                {
+                    ModelState.AddModelError("MontoCompra", $"La cuota mínima a pagar es: ${estadoCuenta.CuotaMinimaAPagar:F2}");
+                    return View(estadoCuenta);
+                }
+                // Verifica si el monto de la compra es mayor al saldo
+                if (estadoCuenta.MontoCompra > estadoCuenta.Saldo)
+                {
+                    ModelState.AddModelError("MontoCompra", $"No se puede abonar mas de la deuda, deuda: ${estadoCuenta.Saldo:F2}");
+                    return View(estadoCuenta);
+                }
                 var detalleEDC = new DetalleEstadoCuenta
                 {
                     IdEstadoCuenta = estadoCuenta.Id,
@@ -231,10 +250,10 @@ namespace FrontEndEDC.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error");
+                return View("Transacciones", null);
             }
 
-            return NotFound();
+            return View("Transacciones", null);
         }
     }
 }

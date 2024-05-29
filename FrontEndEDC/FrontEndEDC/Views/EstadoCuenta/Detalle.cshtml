@@ -2,31 +2,47 @@
 
 @{
     ViewData["Title"] = "Detalle del Estado de Cuenta";
-    decimal saldo = Model.Saldo;
-    decimal limite = Model.Limite;
-    decimal saldoTotal = limite - saldo;
-    decimal porcentajeInteresConfigurable = Model.PorcentajeInteresConfigurable;
-    decimal interesBonificable = saldo * porcentajeInteresConfigurable;
-
+    decimal saldo = 0;
+    decimal limite = 0;
+    decimal saldoTotal = 0;
+    decimal porcentajeInteresConfigurable = 0;
+    decimal interesBonificable = 0;
     var currentMonth = DateTime.Now.Month;
     var currentYear = DateTime.Now.Year;
     var previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
     var previousMonthYear = currentMonth == 1 ? currentYear - 1 : currentYear;
+    var detallesMesActual = new List<DetalleEstadoCuenta>();
+    var detallesMesAnterior = new List<DetalleEstadoCuenta>();
+    decimal sumaMesActual = 0;
+    decimal sumaMesAnterior = 0;
+    var nombreMesActual = "";
+    var nombreMesAnterior = "";
 
-    var detallesMesActual = Model.DetalleEstadoCuenta
-                .Where(d => d.Fecha.Month == currentMonth && d.Fecha.Year == currentYear && d.Accion == 1)
-                .ToList();
+    if (Model != null)
+    {
+        saldo = Model.Saldo;
+        limite = Model.Limite;
+        saldoTotal = limite - saldo;
+        porcentajeInteresConfigurable = Model.PorcentajeInteresConfigurable;
+        interesBonificable = saldo * porcentajeInteresConfigurable;
 
-    var detallesMesAnterior = Model.DetalleEstadoCuenta
-                .Where(d => d.Fecha.Month == previousMonth && d.Fecha.Year == previousMonthYear && d.Accion == 1)
-                .ToList();
+        detallesMesActual = Model.DetalleEstadoCuenta
+            .Where(d => d.Fecha.Month == currentMonth && d.Fecha.Year == currentYear && d.Accion == 1)
+            .ToList();
 
-    decimal sumaMesActual = detallesMesActual.Sum(d => d.Monto);
-    decimal sumaMesAnterior = detallesMesAnterior.Sum(d => d.Monto);
+        detallesMesAnterior = Model.DetalleEstadoCuenta
+            .Where(d => d.Fecha.Month == previousMonth && d.Fecha.Year == previousMonthYear && d.Accion == 1)
+            .ToList();
 
-    var culture = new System.Globalization.CultureInfo("es-ES");
-    var nombreMesActual = culture.DateTimeFormat.GetMonthName(currentMonth);
-    var nombreMesAnterior = culture.DateTimeFormat.GetMonthName(previousMonth);
+        sumaMesActual = detallesMesActual.Sum(d => d.Monto);
+        sumaMesAnterior = detallesMesAnterior.Sum(d => d.Monto);
+
+        var culture = new System.Globalization.CultureInfo("es-ES");
+        nombreMesActual = culture.DateTimeFormat.GetMonthName(currentMonth);
+        nombreMesAnterior = culture.DateTimeFormat.GetMonthName(previousMonth);
+    }
+
+    
 }
 
 <div class="row">
@@ -40,7 +56,11 @@
                 <h5 class="p-3"><strong>Estado de cuenta de tc</strong></h5>
                 <a class="p-3 text-decoration-none text-danger" asp-action="Index">&lt; Volver</a>
             </div>
-
+            @if (Model == null)
+            {
+                <p class="p-3">No se encontró el estado de cuenta solicitado.</p>
+            }
+            else{
             <div class="p-3 d-flex justify-content-between container-edc">
                 <div class="d-flex">
                     <div class="info-edc">
@@ -108,6 +128,7 @@
                     <p>No hay registros para el mes actual</p>
                 }
             </div>
+            }
         </div>
     </div>
 </div>

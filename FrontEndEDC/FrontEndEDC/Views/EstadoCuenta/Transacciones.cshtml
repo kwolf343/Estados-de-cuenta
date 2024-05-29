@@ -2,21 +2,36 @@
 
 @{
     ViewData["Title"] = "Transacciones";
-    decimal saldo = Model.Saldo;
-    decimal limite = Model.Limite;
-    decimal saldoTotal = limite - saldo;
-    decimal porcentajeInteresConfigurable = Model.PorcentajeInteresConfigurable;
-    decimal interesBonificable = saldo * porcentajeInteresConfigurable;
+    decimal saldo = 0;
+    decimal limite = 0;
+    decimal saldoTotal = 0;
+    decimal porcentajeInteresConfigurable = 0;
+    decimal interesBonificable = 0;
+    int currentMonth = 0;
+    int currentYear = 0;
+    List<DetalleEstadoCuenta> detallesMesActualCargos = new List<DetalleEstadoCuenta>();
+    List<DetalleEstadoCuenta> detallesMesActualAbonos = new List<DetalleEstadoCuenta>();
 
-    var currentMonth = DateTime.Now.Month;
-    var currentYear = DateTime.Now.Year;
+    if (Model != null)
+    {
+        saldo = Model.Saldo;
+        limite = Model.Limite;
+        saldoTotal = limite - saldo;
+        porcentajeInteresConfigurable = Model.PorcentajeInteresConfigurable;
+        interesBonificable = saldo * porcentajeInteresConfigurable;
 
-    var detallesMesActualCargos = Model.DetalleEstadoCuenta
-                .Where(d => d.Fecha.Month == currentMonth && d.Fecha.Year == currentYear && d.Accion == 1)
-                .ToList();
-    var detallesMesActualAbonos = Model.DetalleEstadoCuenta
-                .Where(d => d.Fecha.Month == currentMonth && d.Fecha.Year == currentYear && d.Accion == 2)
-                .ToList();
+        currentMonth = DateTime.Now.Month;
+        currentYear = DateTime.Now.Year;
+
+        detallesMesActualCargos = Model.DetalleEstadoCuenta
+            .Where(d => d.Fecha.Month == currentMonth && d.Fecha.Year == currentYear && d.Accion == 1)
+            .ToList();
+
+        detallesMesActualAbonos = Model.DetalleEstadoCuenta
+            .Where(d => d.Fecha.Month == currentMonth && d.Fecha.Year == currentYear && d.Accion == 2)
+            .ToList();
+    }
+
 }
 
 <div class="row">
@@ -30,6 +45,10 @@
                 <h5 class="p-3"><strong>Transacciones</strong></h5>
                 <a class="p-3 text-decoration-none text-danger" asp-action="Index">&lt; Volver</a>
             </div>
+            @if (Model == null)
+            {
+                <p class="p-3">No se encontró el estado de cuenta solicitado.</p>
+            }else{
                 <div class="d-flex p-3">
                     <div class="info-edc">
                         <p><strong>Nombre del cliente:</strong></p>
@@ -83,6 +102,7 @@
                     <p>No hay registros para el mes actual</p>
                 }
             </div>
+            }
         </div>
     </div>
 </div>
