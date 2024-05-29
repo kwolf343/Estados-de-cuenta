@@ -21,7 +21,7 @@ namespace FrontEndEDC.Models
         public decimal Monto { get; set; }
 
         [Required(ErrorMessage = "La acción es obligatoria")]
-        [Range(1, 2, ErrorMessage = "La acción debe ser 1 (crédito) o 2 (débito)")]
+        [Range(1, 2, ErrorMessage = "La acción debe ser 1 (compra) o 2 (pago)")]
         public int Accion { get; set; }
 
         [Required(ErrorMessage = "El número de autorización es obligatorio")]

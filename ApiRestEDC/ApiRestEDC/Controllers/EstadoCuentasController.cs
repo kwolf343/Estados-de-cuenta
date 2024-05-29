@@ -84,7 +84,7 @@ namespace ApiRestEDC.Controllers
 
             estadoCuenta.DetalleEstadoCuenta = detalles.ToList();
 
-            // Calcular el saldo basado en los detalles dentro del rango de fecha proporcionado
+            //Calcular el saldo basado en los detalles dentro del rango de fecha proporcionado
             estadoCuenta.Saldo = detalles.Sum(d => d.Monto);
 
             return estadoCuenta;
@@ -109,12 +109,10 @@ namespace ApiRestEDC.Controllers
                 parameters,
                 commandType: CommandType.StoredProcedure);
 
-            // Set the Id of the inserted estadoCuenta
             estadoCuenta.Id = id;
 
             return CreatedAtAction(nameof(GetEstadoCuentaPorID), new { id = id }, estadoCuenta);
         }
 
-        // Otros métodos del controlador (PUT, DELETE) si es necesario
     }
 }

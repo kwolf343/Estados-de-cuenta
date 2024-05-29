@@ -1,0 +1,61 @@
+﻿@model FrontEndEDC.Models.EstadoCuenta
+@{
+    ViewData["Title"] = "Pago";
+}
+
+<div class="row">
+    <div class="offset-12">
+        <div class="card border">
+            <div class="card-header d-flex align-items-center">
+                <img src="~/banco.png" class="mr-3" alt="Logo del banco">
+                <p class="text-white m-0">Lista de tarjetas</p>
+            </div>
+            <div class="d-flex justify-content-between">
+                <h5 class="p-3"><strong>Registro de pago</strong></h5>
+                <a class="p-3 text-decoration-none text-danger" asp-action="Index">&lt; Volver</a>
+            </div>
+
+            <div class="p-3 d-flex">
+                <div class="info-edc">
+                    <p><strong>Nombre del cliente:</strong></p>
+                    <p><strong>Numero de tarjeta de crédito:</strong></p>
+                </div>
+                <div class="info-edc">
+                    <p>@Html.DisplayFor(m => m.Nombres) @Html.DisplayFor(m => m.Apellidos)</p>
+                    <p>@Html.DisplayFor(m => m.NumeroTarjeta)</p>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Pago" method="POST">
+                    @Html.HiddenFor(m => m.Nombres)
+                    @Html.HiddenFor(m => m.Apellidos)
+                    @Html.HiddenFor(m => m.NumeroTarjeta)
+                    @Html.HiddenFor(m => m.DescripcionCompra)
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="d-flex">
+                        <div class="margin">
+                            <p><label asp-for="FechaCompra" class="control-label">Fecha de pago:</label></p>
+                            <p><label asp-for="MontoCompra" class="control-label">Monto:</label></p>
+                        </div>
+                        <div style="margin-left:10px" class="margin">
+                            <div class="col-8">
+                                <input asp-for="FechaCompra" class="form-control" type="date" placeholder="Ingresa la fecha" />
+                                <span asp-validation-for="FechaCompra" class="text-danger"></span>
+                            </div>
+                            <div class="col-8">
+                                <input asp-for="MontoCompra" class="form-control" placeholder="Ingresa el Monto" />
+                                <span asp-validation-for="MontoCompra" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group my-3">
+                        <button type="submit" class="btn btn-primary active"><i class="bi bi-person-fill"></i>Guardar</button>
+                        <a class="btn btn-warning" asp-action="Index">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

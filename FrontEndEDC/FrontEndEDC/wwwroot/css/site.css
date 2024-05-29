@@ -47,6 +47,9 @@ body {
 .info-edc {
     margin-right: 20px;
 }
+.margin *{
+    margin-top:5px;
+}
 @media only screen and (min-width: 800px) {
     .container-edc {
         width: 85%;
@@ -54,4 +57,14 @@ body {
     .container-edc-table {
         width:95%
     }
+}
+.compras {
+    padding:0 15px;
+    max-width:15px;
+}
+.compras div {
+    margin-right:20px;
+    text-align:center;
+    font-size:13px;
+    font-weight:bold;
 }

@@ -32,9 +32,9 @@
                                         <td>@Html.DisplayFor(n => item.Apellidos)</td>
                                         <td >
                                             <a class="btn btn-primary active btn-edc" asp-action="Detalle" asp-route-id="@item.Id"> Estado de cuenta</a>
-                                            <a class="btn bg-success text-white btn-edc" asp-action="Detalle" asp-route-id="@item.Id"> Registrar compra</a>
-                                            <a class="btn bg-primary text-white btn-edc" asp-action="Borrar" asp-route-id="@item.Id"> Registrar pago</a>
-                                            <a class="btn bg-secondary text-white btn-edc" asp-action="Borrar" asp-route-id="@item.Id"> Transacciones</a>
+                                            <a class="btn bg-success text-white btn-edc" asp-action="Compra" asp-route-id="@item.Id"> Registrar compra</a>
+                                            <a class="btn bg-primary text-white btn-edc" asp-action="Pago" asp-route-id="@item.Id"> Registrar pago</a>
+                                            <a class="btn bg-secondary text-white btn-edc" asp-action="Transacciones" asp-route-id="@item.Id"> Transacciones</a>
                                         </td>
                                     </tr>
                                 }

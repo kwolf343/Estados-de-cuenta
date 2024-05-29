@@ -34,5 +34,19 @@ namespace FrontEndEDC.Models
         [Required(ErrorMessage = "El porcentaje configurable saldo minimo es obligatorio")]
         public decimal PorcentajeConfigurableSaldoMinimo { get; set; }
         public List<DetalleEstadoCuenta> DetalleEstadoCuenta { get; set; } = new List<DetalleEstadoCuenta>();
+
+
+        // Datos para el registro de compras
+        [Required(ErrorMessage = "La fecha es obligatoria")]
+        [DataType(DataType.Date)]
+        public DateTime FechaCompra { get; set; }
+
+        [Required(ErrorMessage = "La descripción es obligatoria")]
+        [MaxLength(200, ErrorMessage = "La descripción no puede exceder 200 caracteres")]
+        public string DescripcionCompra { get; set; } = null!;
+
+        [Required(ErrorMessage = "El monto es obligatorio")]
+        [Range(0, double.MaxValue, ErrorMessage = "El monto debe ser un valor positivo")]
+        public decimal MontoCompra { get; set; }
     }
 }
