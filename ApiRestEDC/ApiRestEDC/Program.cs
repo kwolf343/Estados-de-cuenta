@@ -1,4 +1,6 @@
 using ApiRestEDC.Datos;
+using ApiRestEDC.Repositories;
+using ApiRestEDC.Repositories.Impl;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,6 +22,8 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IEstadoCuentaRepository, EstadoCuentaRepositoryImpl>();
+builder.Services.AddScoped<IDetalleEstadoCuentaRepository, DetalleEstadoCuentaRepositoryImpl>();
 
 var app = builder.Build();
 
