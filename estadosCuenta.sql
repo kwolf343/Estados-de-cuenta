@@ -137,22 +137,23 @@ BEGIN
 END;
 GO
 
--- Nuevo procedimiento almacenado para filtrar por mes y año
-CREATE PROCEDURE SeleccionarDetalleEstadoCuentaPorIdYFecha
-    @IdEstadoCuenta INT,
-    @Fecha DATE
-AS
-BEGIN
-    DECLARE @InicioMes DATE;
-    DECLARE @FinMes DATE;
+-- Inserts de estados de cuenta de ejemplo
+EXEC InsertarEstadoCuenta 
+    @NumeroTarjeta = '1345 **** **** 6788',
+    @Nombres = 'Juan',
+    @Apellidos = 'Pérez',
+    @Cuenta = 123456789,
+    @Limite = 5000.00,
+    @Status = 1,
+    @PorcentajeInteresConfigurable = 0.15,
+    @PorcentajeConfigurableSaldoMinimo = 0.02;
 
-    SET @InicioMes = DATEADD(MONTH, DATEDIFF(MONTH, 0, @Fecha), 0);
-    SET @FinMes = DATEADD(MONTH, 1, @InicioMes);
-
-    SELECT * 
-    FROM detalleEstadoCuenta 
-    WHERE idEstadoCuenta = @IdEstadoCuenta 
-    AND Fecha >= @InicioMes 
-    AND Fecha < @FinMes;
-END;
-GO
+EXEC InsertarEstadoCuenta 
+    @NumeroTarjeta = '4896 **** **** 5568',
+    @Nombres = 'David',
+    @Apellidos = 'Castro',
+    @Cuenta = 567894556,
+    @Limite = 2000.00,
+    @Status = 1,
+    @PorcentajeInteresConfigurable = 0.25,
+    @PorcentajeConfigurableSaldoMinimo = 0.05;
