@@ -1,0 +1,125 @@
+{
+	"info": {
+		"_postman_id": "103902bf-d0b5-48a1-a8b4-97c2c2d4314e",
+		"name": "EDC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13808541"
+	},
+	"item": [
+		{
+			"name": "https://localhost:7154/EstadoCuentas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7154/EstadoCuentas",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7154",
+					"path": [
+						"EstadoCuentas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:7154/EstadoCuentas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"numeroTarjeta\": \"4567 **** **** 7896\",\r\n  \"nombres\": \"kevin\",\r\n  \"apellidos\": \"Magaña\",\r\n  \"cuenta\": 67890,\r\n  \"limite\": 2000,\r\n  \"status\": 1,\r\n  \"porcentajeInteresConfigurable\": 0.25,\r\n  \"porcentajeConfigurableSaldoMinimo\": 0.05\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7154/EstadoCuentas",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7154",
+					"path": [
+						"EstadoCuentas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:7154/EstadoCuentas/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7154/EstadoCuentas/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7154",
+					"path": [
+						"EstadoCuentas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:7154/DetalleEstadoCuentas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Id\":0,\r\n\t\"IdEstadoCuenta\":1,\r\n\t\"Descripcion\":\"prueba de fuego4\",\r\n\t\"Fecha\":\"2024-05-29T00:00:00\",\r\n\t\"Monto\":10.00,\r\n\t\"Accion\":1,\r\n\t\"NumAutorizacion\":123456789\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7154/DetalleEstadoCuentas",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7154",
+					"path": [
+						"DetalleEstadoCuentas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:7154/DetalleEstadoCuentas/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7154/DetalleEstadoCuentas/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7154",
+					"path": [
+						"DetalleEstadoCuentas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
