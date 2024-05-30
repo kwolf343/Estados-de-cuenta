@@ -27,7 +27,7 @@ namespace ApiRestEDC.Controllers
             var estadoCuentas = await _estadoCuentaRepository.findAll();
             foreach (var estadoCuenta in estadoCuentas)
             {
-                var detalles = await _detalleEstadoCuentaRepository.GetByEstadoCuentaIdAsync(estadoCuenta.Id);
+                var detalles = await _detalleEstadoCuentaRepository.findById(estadoCuenta.Id);
                 estadoCuenta.DetalleEstadoCuenta = detalles.ToList();
             }
 
@@ -43,7 +43,7 @@ namespace ApiRestEDC.Controllers
                 return NotFound();
             }
 
-            var detalles = await _detalleEstadoCuentaRepository.GetByEstadoCuentaIdAsync(estadoCuenta.Id);
+            var detalles = await _detalleEstadoCuentaRepository.findById(estadoCuenta.Id);
             estadoCuenta.DetalleEstadoCuenta = detalles.ToList();
 
             return estadoCuenta;

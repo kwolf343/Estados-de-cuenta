@@ -12,7 +12,7 @@ namespace ApiRestEDC.Repositories.Impl
         {
             _dbConnection = dbConnection;
         }
-        public async Task<IEnumerable<DetalleEstadoCuenta>> GetByEstadoCuentaIdAsync(int estadoCuentaId)
+        public async Task<IEnumerable<DetalleEstadoCuenta>> findById(int estadoCuentaId)
         {
             var detalles = await _dbConnection.QueryAsync<DetalleEstadoCuenta>(
                 "SeleccionarDetalleEstadoCuentaPorIDEstadoCuenta",
@@ -21,13 +21,24 @@ namespace ApiRestEDC.Repositories.Impl
             return detalles;
         }
 
-        public async Task<IEnumerable<DetalleEstadoCuenta>> GetByIdAndDateAsync(int estadoCuentaId, DateTime fecha)
+        public async Task<int> Save(DetalleEstadoCuenta detalleEstadoCuenta)
         {
-            var detalles = await _dbConnection.QueryAsync<DetalleEstadoCuenta>(
-                "SeleccionarDetalleEstadoCuentaPorIdYFecha",
-                new { IdEstadoCuenta = estadoCuentaId, Fecha = fecha },
+            var parameters = new
+            {
+                idEstadoCuenta = detalleEstadoCuenta.IdEstadoCuenta,
+                Descripcion = detalleEstadoCuenta.Descripcion,
+                Fecha = detalleEstadoCuenta.Fecha,
+                Monto = detalleEstadoCuenta.Monto,
+                Accion = detalleEstadoCuenta.Accion,
+                NumAutorizacion = detalleEstadoCuenta.NumAutorizacion
+            };
+
+            var id = await _dbConnection.ExecuteScalarAsync<int>(
+                "InsertarDetalleEstadoCuenta",
+                parameters,
                 commandType: CommandType.StoredProcedure);
-            return detalles;
+
+            return id;
         }
     }
 }
